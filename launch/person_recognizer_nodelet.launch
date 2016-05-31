@@ -1,0 +1,16 @@
+<launch>
+  <node pkg="nodelet" type="nodelet" name="personrecognizer_nodelet" args="manager" />
+<!--
+  <node pkg="nodelet" type="nodelet" name="kodak"
+  args="load kodak360cam/Kodak360CamNodelet personrecognizer_nodelet">
+    <rosparam ns="kodak" />   
+    <remap from="/kodaksp360/image_raw" to="kodak/image_raw" />
+    <param name="width" type="int" value="1280" />
+    <param name="height" type="int" value="720" />
+    <param name="device" type="int" value="1" />
+    <param name="fps" type="int" value="30" />
+  </node>
+-->
+  <node pkg="nodelet" type="nodelet" name="face_detector"
+  args="load facedetector/FaceDetectorNodelet personrecognizer_nodelet" output="screen" launch-prefix="xterm -e" />
+</launch>

@@ -1,0 +1,37 @@
+#include <iostream>
+#include <string>
+#include <stdint.h>
+#include <ros/ros.h>
+#include <boost/thread/mutex.hpp>
+#include <opencv2/opencv.hpp>
+//#include <openvc2/contrib/contrib.hpp>
+#include <opencv2/gpu/gpu.hpp>
+#include <std_msgs/String.h>
+#include <sensor_msgs/Image.h>
+#include <sensor_msgs/image_encodings.h>
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include "cascadeclassifier.cpp"
+
+//using namespace cv;
+//using namespace cv::gpu;
+
+class FaceDetector {
+ private:
+  /** opencv properties */
+  const std::string cascade_name;
+  cv::CascadeClassifier face_cascade;
+  const std::string window_name;
+
+  /** image transport properties */
+  image_transport::ImageTransport* it;
+  image_transport::Subscriber image_sub;
+  image_transport::Publisher image_pub;
+
+  ros::Publisher faces_pub;
+  ros::NodeHandle nh;
+
+ public:  
+  explicit FaceDetector(ros::NodeHandle& n);
+  void detector(const sensor_msgs::ImageConstPtr& msg);
+};

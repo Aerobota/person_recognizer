@@ -1,0 +1,7 @@
+[submodule "opencv"]
+	path = opencv
+	url = https://github.com/Itseez/opencv/
+	branch = 2.4
+[submodule "v4l-utils"]
+	path = v4l-utils
+	url = https://git.linuxtv.org/v4l-utils.git/
