@@ -1,0 +1,7 @@
+# person_recognizer  
+```git clone --recursive https://github.com/demulab/person_recognizer.git```  
+# dependencies  
+CUDA  
+opencv  
+ROS  
+
