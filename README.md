@@ -10,3 +10,6 @@ works awesome when using gpu and full hd camera mode.
 gender recognition with caffe.  
 ## TODO  
 extract just face image using opencv ROI.  
+make person remembering and person classification  
+make logging & database functionality  
+make data extraction ablity  
