@@ -44,6 +44,43 @@ find_package(Eigen3 REQUIRED)
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 # catkin_python_setup()
 
+#Run cppcheck#                                                                                                                                                                                                                    
+execute_process(
+  COMMAND "cppcheck" "--enable=all" "src" "-I" "include" "--suppress=missingIncludeSystem" "|" "tee" "logs/cppcheck.log"
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+#Run cpplint#                                                                                                                                                                                                                     
+execute_process(
+  COMMAND "cpplint" "--recursive" "src" "include" "|" "tee" "logs/cpplint.log"
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+#Delete Past Docs#                                                                                                                                                                                                                
+execute_process(
+  COMMAND "rm" "-rf" "docs"
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+#Generate Docs#                                                                                                                                                                                                                   
+execute_process(
+  COMMAND "doxygen"
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+#Make Docs dir#                                                                                                                                                                                                                   
+execute_process(
+  COMMAND "mkdir" "docs"
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+
+)
+
+#Move Files to docs dir#                                                                                                                                                                                                          
+execute_process(
+  COMMAND "mv" "html" "latex" "docs"
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
