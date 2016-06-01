@@ -75,14 +75,23 @@ void FaceDetector::detector(const sensor_msgs::ImageConstPtr& msg){
     .download(obj_host);
 
   cv::Rect* cfaces = obj_host.ptr<cv::Rect>();
-  
+
+  std::vector<cv::Mat> faces_roi;
+
+  cv::Mat camera_img = image->image;
   /** draw faces gpu */
   for( int i = 0; i < faces_number; ++i ){
+    faces_roi.push_back(camera_img(cfaces[i]));
+    /** publish face images */
+    image->image = faces_roi[i];
+    image_pub.publish(image->toImageMsg() );
+    /*
     cv::Point pt1 = cfaces[i].tl();
     cv::Size sz = cfaces[i].size();
     cv::Point pt2(pt1.x + sz.width,
 		  pt1.y + sz.height );
     cv::rectangle(image->image, pt1, pt2, cv::Scalar(255));
+    */
   }
 
   /** draw faces cpu */
@@ -103,8 +112,6 @@ void FaceDetector::detector(const sensor_msgs::ImageConstPtr& msg){
 		 );
   }
   */
-  /** publish face images */
-  image_pub.publish(image->toImageMsg() );
   std_msgs::String f_msg;
   f_msg.data = std::to_string(faces_number);
   faces_pub.publish(f_msg);
