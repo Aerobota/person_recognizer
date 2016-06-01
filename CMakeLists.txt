@@ -26,16 +26,14 @@ find_package(catkin REQUIRED COMPONENTS
   pluginlib
   sensor_msgs
   std_msgs
+  roscpp
+  rospy
+  message_generation
 )
 find_package(Boost REQUIRED COMPONENTS system thread)
 find_package(OpenCV REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(Eigen3 REQUIRED)
-
-catkin_package(
-  LIBRARIES facedetector_nodelet
-  CATKIN_DEPENDS cv_bridge image_transport nodelet pluginlib sensor_msgs std_msgs
-)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -71,11 +69,12 @@ catkin_package(
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
+add_message_files(
+   FILES
+   Face.msg
 #   Message1.msg
 #   Message2.msg
-# )
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -92,10 +91,11 @@ catkin_package(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   sensor_msgs#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  sensor_msgs#   std_msgs
+  std_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -127,12 +127,9 @@ catkin_package(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES person_recognizer
-#  CATKIN_DEPENDS cv_bridge image_transport nodelet pluginlib sensor_msgs std_msgs
-#  DEPENDS system_lib
+  LIBRARIES facedetector_nodelet
+  CATKIN_DEPENDS cv_bridge image_transport nodelet pluginlib sensor_msgs std_msgs rospy roscpp message_runtime
 )
-
 ###########
 ## Build ##
 ###########

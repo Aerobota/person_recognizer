@@ -11,6 +11,8 @@
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include "ComputationMode.h"
+#include <person_recognizer/Face.h>
+
 
 class FaceDetector {
  private:
@@ -25,9 +27,9 @@ class FaceDetector {
   /** image transport properties */
   image_transport::ImageTransport* it;
   image_transport::Subscriber image_sub;
-  image_transport::Publisher image_pub;
 
-  ros::Publisher faces_pub;
+  /** ROS Properties */
+  ros::Publisher face_pub;
   ros::NodeHandle nh;
 
  public:  

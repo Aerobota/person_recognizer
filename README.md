@@ -1,4 +1,4 @@
-# person_recognizer  
+B1;2802;0c# person_recognizer  
 ```git clone --recursive https://github.com/demulab/person_recognizer.git```  
 ## dependencies  
 CUDA 7.5 runtime  
@@ -6,6 +6,11 @@ opencv
 ROS  
 ## face_detector  
 works awesome when using gpu and full hd camera mode.  
+## ROS Msg  
+###Face  
+Header header  
+uint8 number  
+sensor_msgs/Image faces  
 ## gender_recognizer.py  
 gender recognition with caffe.  
 ## TODO  
