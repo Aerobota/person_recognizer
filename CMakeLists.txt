@@ -109,6 +109,8 @@ execute_process(
 add_message_files(
    FILES
    Face.msg
+   Gender.msg
+   SimpleImage.msg
 #   Message1.msg
 #   Message2.msg
 )

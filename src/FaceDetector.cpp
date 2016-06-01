@@ -1,3 +1,10 @@
+/**
+ * @file FaceDetector.cpp
+ * @brief Class for detecting faces using GPU.
+ * @author Kensei Demura
+ * @date 2016/06/01
+ */
+
 #include "FaceDetector.h"
 
 FaceDetector::FaceDetector(ros::NodeHandle& n) :

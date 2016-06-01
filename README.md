@@ -3,7 +3,10 @@ B1;2802;0c# person_recognizer
 ## dependencies  
 CUDA 7.5 runtime  
 opencv  
+caffe  
 ROS  
+sqlite3  
+apsw(python sqlite library, get it from pip)  
 ## face_detector  
 works awesome when using gpu and full hd camera mode.  
 ## ROS Msg  

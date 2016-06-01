@@ -1,3 +1,10 @@
+/**
+ * @file FaceDetector.h
+ * @brief Header file for FaceDetector class.
+ * @author Kensei Demura
+ * @date 2016/06/01
+ */
+
 #include <iostream>
 #include <string>
 #include <stdint.h>
@@ -15,6 +22,9 @@
 
 
 class FaceDetector {
+  /**
+   * Class for detecting faces using GPU.
+   */
  private:
   /** opencv properties */
   const std::string cascade_name;
@@ -32,7 +42,12 @@ class FaceDetector {
   ros::Publisher face_pub;
   ros::NodeHandle nh;
 
- public:  
+ public:
+  /** face detection class constructor */
   explicit FaceDetector(ros::NodeHandle& n);
+  /**
+   * face detection method and ros subscriber callback function. 
+   * @param msg received input of image topic callback. 
+   */
   void detector(const sensor_msgs::ImageConstPtr& msg);
 };
