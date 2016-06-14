@@ -11,7 +11,9 @@ FaceDetector::FaceDetector(ros::NodeHandle& n) :
   nh(n),
   cascade_name("/home/kendemu/catkin_ws/src/person_recognizer/cfg/haarcascade_frontalface_alt.xml"),
   cascade_name_gpu("/home/kendemu/catkin_ws/src/person_recognizer/cfg/gpu/haarcascade_frontalface_alt.xml"),
-  window_name("Face Detection"){
+  window_name("Face Detection"),
+  camera_fov{235,360},
+  camera_res{1920,1080}{
   
   /** image transport and topic subscribe/publish */
   it = new image_transport::ImageTransport(nh);
@@ -96,13 +98,18 @@ void FaceDetector::detector(const sensor_msgs::ImageConstPtr& msg){
   */
   for( int i = 0; i < faces_number; ++i ){
     faces_roi.push_back(camera_img(cfaces[i]));
+    /**
+     * store angle data
+     */
+    face.xangle.push_back(int(float(camera_fov[0])/float(camera_res[0])) * (cfaces[i].x + cfaces[i].width/2 - camera_res[0]/2));
+
+    face.yangle.push_back(int(float(camera_fov[1])/float(camera_res[1])) * (cfaces[i].y + cfaces[i].height/2 - camera_res[1] / 2));
+     
     image->image = faces_roi[i];
     sensor_msgs::Image* img_msg = image->toImageMsg().get();
     face.faces.push_back(*img_msg);
-    //image_pub.publish(image->toImageMsg() );
   }
 
   /** publish face topic */
   face_pub.publish(face);
-
 }

@@ -32,6 +32,8 @@ class FaceDetector {
   cv::CascadeClassifier face_cascade;
   cv::gpu::CascadeClassifier_GPU face_cascade_gpu;
   const std::string window_name;
+  const int camera_fov[2];
+  const int camera_res[2];
   ComputationMode computation_mode; 
 
   /** image transport properties */
