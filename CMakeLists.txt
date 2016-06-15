@@ -29,6 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   message_generation
+  pcl_ros
 )
 find_package(Boost REQUIRED COMPONENTS system thread)
 find_package(OpenCV REQUIRED)
@@ -167,7 +168,7 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   LIBRARIES facedetector_nodelet
-  CATKIN_DEPENDS cv_bridge image_transport nodelet pluginlib sensor_msgs std_msgs rospy roscpp message_runtime
+  CATKIN_DEPENDS cv_bridge image_transport nodelet pluginlib sensor_msgs std_msgs rospy roscpp message_runtime pcl_ros
 )
 ###########
 ## Build ##
