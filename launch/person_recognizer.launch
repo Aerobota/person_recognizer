@@ -1,0 +1,8 @@
+<launch>
+	<node name="face_detector" pkg="person_recognizer" type="face_detector"></node>
+	<node name="gender_recognizer" pkg="person_recognizer" type="gender_recognizer"></node>
+	<node name="kaldi_ros" pkg="kaldi_ros" type="kaldi_ros.py"/></node>
+	<node name="name_extractor" pkg="person_recognizer" type="name_extractor.py"></node>
+	<node name="person_recog_server" pkg="person_recognizer" type="person_recognizer_server.py"></node>
+	<node name="person_recog_client" pkg="person_recognizer" type="person_recognizer_client.py"></node>
+</launch>
