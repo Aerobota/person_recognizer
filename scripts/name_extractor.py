@@ -12,13 +12,13 @@ from sound_play.libsoundplay import SoundClient
 
 class GPSR:
     def __init__(self):
-        self.speech = rospy.Subscriber("/speech_recog", String,self.speechcallback)
+        self.speech = rospy.Subscriber("/voice_recog", String,self.speechcallback)
         self.speech_input = ""
         self.token = []
         self.token_tag = []
         self.soundhandle = SoundClient()
         self.voice = "voice_kal_diphone"
-        self.name_pub = rospy.publisher("/name", String, queue_size=10)
+        self.name_pub = rospy.Publisher("/name", String, queue_size=10)
         
     def tokenize(self,s_input):
         self.token = word_tokenize(s_input)
@@ -62,31 +62,26 @@ class GPSR:
                         if mini[0] > i - predict[j] and i - predict[j] > 0:
                             mini = [i-predict[j],predict[j]]
                         j = mini[1]
-                    while j > 0:
-                        if self.token_tag[j-1][1] == "NNP" or self.token_tag[j-1][1] == "NN":
-                            continuous.append(self.token[j-1])
-                        else: break
-                        j-= 1
-                    continuous.reverse()
-                    if len(continuous) > 0:
-                        self.token[i] = " ".join(continuous)+" "+self.token[mini[1]]
-                    else:
-                        self.token[i] = self.token[mini[1]]
-                        print self.token[i]
-                        self.token_tag[i] = tuple([self.token[i], "NNP"])
+                        while j > 0:
+                            if self.token_tag[j-1][1] == "NNP" or self.token_tag[j-1][1] == "NN":
+                                continuous.append(self.token[j-1])
+                            else: break
+                            j-= 1
+                        continuous.reverse()
+
+                        if len(continuous) > 0:
+                            self.token[i] = " ".join(continuous)+" "+self.token[mini[1]]
+                        else:
+                            self.token[i] = self.token[mini[1]]
+                            print self.token[i]
+                            self.token_tag[i] = tuple([self.token[i], "NNP"])
 
     def speechcallback(self,data):
-        print data
+        #print data
         token = self.tokenize(str(data).replace("data:",""))
         self.PRPProcessor()
         syn_list = []
-        print "mean token"
-        for i in range(len(token)):
-            if self.token_tag[i][1] != "CC" and self.token_tag[i][1] != "DT" and self.token_tag[i][1] != "TO":
-                rospy.loginfo("%s : %s", token[i], self.token_tag[i])
-                syn_list.append(self.synonym(token[i]))
-
-
+        
         print "synonyms"
         _syn = []
         for i in range(len(syn_list)):
@@ -98,12 +93,10 @@ class GPSR:
                         __syn.append(syn[j][0])
             syn.append(__syn)
 
-        for i in range(len(_syn)):
-            print _syn[i]
-
-        for i in range(len(token)):
-            print "token data is : ", token
-            self.soundhandle.say("your objective."+" ".join(token),self.voice)
+        msg = String()
+        msg.data = token[len(token)-1]
+        print "name : ", msg.data
+        self.name_pub.publish(msg)
 
 def main(args):
     rospy.init_node("name_extractor")

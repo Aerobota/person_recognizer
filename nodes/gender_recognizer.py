@@ -50,15 +50,9 @@ class GenderRecognizer:
     def callback(self,data):
         msg = Gender()
 
-        faces = [SimpleImage() for i in range(data.number)]
-        
-        for i in range(data.number):
-            
-            #copy Face topic image buffers
-            faces[i].width = data.faces[i].width
-            faces[i].height = data.faces[i].height
-            faces[i].data = data.faces[i].data
+        faces = data.faces
 
+        for i in range(data.number):            
             #convert sensor_msgs/Image to cv::Mat
             try:
                 image = self.bridge.imgmsg_to_cv2(data.faces[i],"bgr8")
@@ -72,6 +66,8 @@ class GenderRecognizer:
             msg.gender.append(self.labels[np.argmax(score)])
 
         msg.faces = faces
+        msg.xangle = data.xangle
+        msg.yangle = data.yangle
         msg.header.stamp = rospy.Time.now()
         self.gender_pub.publish(msg)
             
