@@ -9,6 +9,7 @@ from subprocess import call
 import numpy as np
 import time
 import os
+import math
 
 path = "/home/kendemu/catkin_ws/src/person_recognizer"
 
@@ -61,12 +62,14 @@ class PersonRecognizerClient:
     def EventLoop(self, data):
         rospy.loginfo("state : %d", PersonRecognizerClient.state)
         if PersonRecognizerClient.state == 0:
-            self.speak("Operator, I am going to tell you 2 things.")
+            self.speak("Operator, I am going to tell you 3 things.")
             self.speak("1st")
             self.speak("Operator, tell your name by this sentence only.")
             self.speak("I am Bob, I am John")
             self.speak("2nd")
             self.speak("Operator, go to the front of Mini Robot.")
+            self.speak("3rd")
+            self.speak("Operator, say it in a loud voice.")
             self.speak("OK?")
             PersonRecognizerClient.state = 1
 
@@ -74,17 +77,29 @@ class PersonRecognizerClient:
             self.speak("I am going to remember you.")
             self.speak("Say your name")
             speech_control_pub.publish("speak")
+            time.sleep(3)
             PersonRecognizerClient.state = 2
 
         elif PersonRecognizerClient.state == 2:
             time.sleep(1)
-            self.speak("your name is " + PersonRecognizerClient.name)
-            self.remembered_face = data.faces[np.argmin(map(lambda x : x,data.xangle))]
-            person_recog_pub.publish(self.remembered_face)
-            speech_control_pub.publish("stop")
-            person_state_pub.publish(1)
-            time.sleep(5)
-            PersonRecognizerClient.state = 3 
+            if PersonRecognizerClient.name is "":
+                self.speak("I am hearing you")
+                self.speak("Please say it in a loud voice")
+            else:
+                self.speak("your name is " + PersonRecognizerClient.name)
+                print "faces number : ", len(data.faces)
+                if len(data.faces) > 0:
+                    self.remembered_face = data.faces[np.argmin(map(lambda x : x,data.xangle))]
+                    person_recog_pub.publish(self.remembered_face)
+                    speech_control_pub.publish("stop")
+                    person_state_pub.publish(1)
+                    time.sleep(1)
+                    PersonRecognizerClient.state = 3 
+                else:
+                    self.speak("I am finding you")
+                    self.speak("Go front of minis")
+                    self.speak("look at mini eye.")
+
 
         elif PersonRecognizerClient.state == 3:
             self.speak("waiting 10 seconds")
@@ -113,6 +128,8 @@ class PersonRecognizerClient:
         elif PersonRecognizerClient.state == 6:
             if len(PersonRecognizerClient.person_info.faces) > 0:
                 if person_info_received is True:
+                    PersonRecognizerClient.state = 7
+                    print "person_info_received", person_info_received
                     self.person_index  = np.argmin(PersonRecognizerClient.person_info.distance)
                     print "face location", self.person_index
                     print "xangle : ", PersonRecognizerClient.person_info.xangle
@@ -123,24 +140,25 @@ class PersonRecognizerClient:
                     self.speak("I am going to point you with my arm and my direction")
                     servo = Servo()
                     servo.idx    = [i+1 for i in range(6)]
-                    servo.torque = [1 for i in range(6)]
-                    servo.angle = [-PersonRecognizerClient.person_info.yangle[self.person_index], -PersonRecognizerClient.person_info.yangle[self.person_index] , 0, 90, 90, 0]
+                    servo.torque = [1, 1, 1, 1, 1, 0]
+                    servo.angle = [-PersonRecognizerClient.person_info.yangle[self.person_index], -PersonRecognizerClient.person_info.yangle[self.person_index] , 90, 90, 0, 0]
+                    print servo_angle[0], servo_angle[1]
+
                     vel = Twist()
                     vel.angular.z = math.radians(PersonRecognizerClient.person_info.xangle[self.person_index])
-                    servo.time = [3 for i in range(6)]
+                    servo.time = [1 for i in range(6)]
                     servo.parent_frame = ["base_link" for i in range(6)]
                     arm_pub.publish(servo)
-                    time.sleep(2.0)
+                    time.sleep(5.0)
                     vel_pub.publish(vel)
+                    self.speak("moved arm")
                     time.sleep(1.0)
-                    PersonRecognizerClient.state = 7
 
             else:
                 self.speak("waiting for operator finding")
-                
 
         elif PersonRecognizerClient.state == 7:
-            print "face number", len(PersonRecognizerClient.person_info.faces)
+            self.speak("number of human is " + str(len(PersonRecognizerClient.person_info.faces)))
             if person_info_received is True:
                 for i in range(len(PersonRecognizerClient.person_info.faces)):
                     self.speak("person at azimuth "+str(PersonRecognizerClient.person_info.xangle[i])+" elevation "+str(PersonRecognizerClient.person_info.yangle[i])+ " gender is " +  PersonRecognizerClient.person_info.gender[i])
@@ -148,9 +166,9 @@ class PersonRecognizerClient:
             else:
                 rospy.loginfo("waiting for person info receive")
         elif PersonRecognizerClient.state == 8:
-            print "making pdf report"
+            self.speak("making pdf report")
             time.sleep(1)
-            print "ending"
+            self.speak("ending")
             PersonRecognizerClient.state = 9
 
         
