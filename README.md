@@ -8,6 +8,8 @@ ROS
 sqlite3  
 h5py  
 openface  
+gstreamer 1.0  
+sound_play  
 ## face_detector  
 works awesome when using gpu and full hd camera mode.  
 ## ROS Msg  
