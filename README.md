@@ -1,23 +1,29 @@
-B1;2802;0c# person_recognizer  
+# person_recognizer  
 ```git clone --recursive https://github.com/demulab/person_recognizer.git```  
 ## dependencies  
 CUDA 7.5 runtime  
-opencv  
-caffe  
+opencv(GPU support build)  
+caffe/pycaffe  
 ROS  
 sqlite3  
-apsw(python sqlite library, get it from pip)  
+h5py  
+openface  
 ## face_detector  
 works awesome when using gpu and full hd camera mode.  
 ## ROS Msg  
 ###Face  
 Header header  
 uint8 number  
-sensor_msgs/Image faces  
+sensor_msgs/Image[] faces  
+int32[] xangle  
+int32[] yangle  
 ## gender_recognizer.py  
 gender recognition with caffe.  
+## person_recognizer_server.py  
+person memorizing and matching with openface.  
+## name_extractor.py  
+name extraction from voice using kaldi and nltk.  
+## person_recognizer_client.py  
+person memorizing, matching and describing features of people.  
 ## TODO  
-extract just face image using opencv ROI. : clear  
-make person remembering and person classification  
-make logging & database functionality  
-make data extraction ablity  
+make logging  
