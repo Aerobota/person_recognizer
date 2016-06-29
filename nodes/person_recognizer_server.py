@@ -58,7 +58,7 @@ class PersonRecognizer:
                 person.yangle.append(data.yangle[i])
                 person.gender.append(data.gender[i])
                 rospy.loginfo("Face distance : %f", person.distance[i])
-                #print person.distance[i]
+        
             self.person_pub.publish(person)
 
 

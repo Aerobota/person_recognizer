@@ -101,9 +101,20 @@ void FaceDetector::detector(const sensor_msgs::ImageConstPtr& msg){
     /**
      * store angle data
      */
-    face.xangle.push_back(int(float(camera_fov[0])/float(camera_res[0])) * (cfaces[i].x + cfaces[i].width/2 - camera_res[0]/2));
+    face.xangle.push_back(
+			  int(
+			      float(camera_fov[0])/float(camera_res[0]) * 
+			      float(cfaces[i].x + cfaces[i].width/2 - 
+				    camera_res[0]/2)
+			      )
+			  );
 
-    face.yangle.push_back(int(float(camera_fov[1])/float(camera_res[1])) * (cfaces[i].y + cfaces[i].height/2 - camera_res[1] / 2));
+    face.yangle.push_back(
+			  int(
+			      float(camera_fov[1])/float(camera_res[1]) * 
+			      float(cfaces[i].y + cfaces[i].height/2 - camera_res[1] / 2)
+			      )
+			  );
      
     image->image = faces_roi[i];
     sensor_msgs::Image* img_msg = image->toImageMsg().get();
