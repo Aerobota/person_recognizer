@@ -16,6 +16,7 @@ path = "/home/kendemu/catkin_ws/src/person_recognizer"
 speech_control_pub = rospy.Publisher("/speech_control", String)
 person_recog_pub = rospy.Publisher("/person_recog_faces", Image)
 person_state_pub = rospy.Publisher("/record_faces", Int32)
+
 arm_pub = rospy.Publisher("/servo", Servo)
 vel_pub = rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=10)
         
@@ -116,6 +117,9 @@ class PersonRecognizerClient:
             time.sleep(1.0)
             vel_pub.publish(vel)
             time.sleep(1.0)
+            vel.angular.z = 1.0
+            vel_pub.publish(vel)
+            time.sleep(1.0)
             PersonRecognizerClient.state = 5
         
         elif PersonRecognizerClient.state == 5:
@@ -132,17 +136,19 @@ class PersonRecognizerClient:
                     print "person_info_received", person_info_received
                     self.person_index  = np.argmin(PersonRecognizerClient.person_info.distance)
                     print "face location", self.person_index
-                    print "xangle : ", PersonRecognizerClient.person_info.xangle
-                    print "yangle : ", PersonRecognizerClient.person_info.yangle
-                    self.speak("operator " + PersonRecognizerClient.name +" is at azimuth " + str(PersonRecognizerClient.person_info.xangle[self.person_index]) + " elevation " + str(PersonRecognizerClient.person_info.yangle[self.person_index]))
+                    for j in range(2):
+                        self.speak("operator "+ PersonRecognizerClient.name + " relative position from Happy Mini")
+
+                    self.speak("at azimuth angle " + str(PersonRecognizerClient.person_info.xangle[self.person_index]))
+                    self.speak("at elevation angle " + str(-PersonRecognizerClient.person_info.yangle[self.person_index]))
                     self.speak("operator " + PersonRecognizerClient.name + " gender is " + PersonRecognizerClient.person_info.gender[self.person_index])
 
-                    self.speak("I am going to point you with my arm and my direction")
+                    self.speak("I am going to point you with my arm")
+                    self.speak("and my direction")
                     servo = Servo()
                     servo.idx    = [i+1 for i in range(6)]
                     servo.torque = [1, 1, 1, 1, 1, 0]
-                    servo.angle = [-PersonRecognizerClient.person_info.yangle[self.person_index], -PersonRecognizerClient.person_info.yangle[self.person_index] , 90, 90, 0, 0]
-                    print servo_angle[0], servo_angle[1]
+                    servo.angle = [-PersonRecognizerClient.person_info.yangle[self.person_index], -PersonRecognizerClient.person_info.yangle[self.person_index] , -90, 90, 15, 0]
 
                     vel = Twist()
                     vel.angular.z = math.radians(PersonRecognizerClient.person_info.xangle[self.person_index])
@@ -155,16 +161,24 @@ class PersonRecognizerClient:
                     time.sleep(1.0)
 
             else:
-                self.speak("waiting for operator finding")
+                self.speak("Waiting for Finding Operator")
 
         elif PersonRecognizerClient.state == 7:
-            self.speak("number of human is " + str(len(PersonRecognizerClient.person_info.faces)))
+            for j in range(2):
+                self.speak("the number of human is ")
+                self.speak(str(len(PersonRecognizerClient.person_info.faces)))
+
             if person_info_received is True:
                 for i in range(len(PersonRecognizerClient.person_info.faces)):
-                    self.speak("person at azimuth "+str(PersonRecognizerClient.person_info.xangle[i])+" elevation "+str(PersonRecognizerClient.person_info.yangle[i])+ " gender is " +  PersonRecognizerClient.person_info.gender[i])
+                    self.speak("person " + str(i))
+                    self.speak("person " + str(i) + " location from the relative position from Happy Mini")
+                    self.speak("at azimuth angle "+str(PersonRecognizerClient.person_info.xangle[i]))
+                    self.speak("at elevation angle "+str(-PersonRecognizerClient.person_info.yangle[i]))
+                    self.speak("the gender is " + PersonRecognizerClient.person_info.gender[i])
                 PersonRecognizerClient.state = 8
             else:
-                rospy.loginfo("waiting for person info receive")
+                rospy.loginfo("waiting for recognition result")
+
         elif PersonRecognizerClient.state == 8:
             self.speak("making pdf report")
             time.sleep(1)
